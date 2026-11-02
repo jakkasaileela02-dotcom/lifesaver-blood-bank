@@ -1,0 +1,314 @@
+/* ==========================================================================
+   LifeSaver Blood Bank – Donor and Inventory Management System
+   Stylesheet: static/css/style.css
+   Colors: Deep Red (#991b1b), Navy Blue (#0f172a), White (#ffffff)
+   ========================================================================== */
+
+:root {
+    --primary-red: #991b1b;
+    --primary-red-hover: #7f1d1d;
+    --primary-red-light: #fef2f2;
+    --primary-red-border: #fecaca;
+    --navy-blue: #0f172a;
+    --navy-blue-light: #1e293b;
+    --neutral-bg: #f8fafc;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--neutral-bg);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+/* Tabular numbers for clean data alignment */
+.tabular-nums {
+    font-family: var(--font-family);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Top Emergency Bar */
+.top-emergency-bar {
+    background-color: var(--navy-blue);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.8125rem;
+}
+
+/* Main Navigation Bar */
+.main-navbar {
+    background-color: var(--primary-red);
+    box-shadow: 0 4px 14px rgba(153, 27, 27, 0.15);
+    padding: 0.75rem 0;
+}
+
+.brand-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: #fff;
+}
+
+.brand-sub {
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 0.9375rem;
+    transition: color 0.15s ease-in-out;
+    padding: 0.5rem 0.85rem !important;
+}
+
+.nav-link:hover {
+    color: #ffffff !important;
+}
+
+/* Custom Buttons */
+.btn-danger {
+    background-color: #b91c1c;
+    border-color: #b91c1c;
+    color: #ffffff;
+}
+
+.btn-danger:hover, .btn-danger:focus {
+    background-color: #991b1b;
+    border-color: #991b1b;
+}
+
+.btn-navy {
+    background-color: var(--navy-blue);
+    border-color: var(--navy-blue);
+    color: #ffffff;
+}
+
+.btn-navy:hover, .btn-navy:focus {
+    background-color: var(--navy-blue-light);
+    border-color: var(--navy-blue-light);
+    color: #ffffff;
+}
+
+.btn-outline-navy {
+    border-color: var(--navy-blue);
+    color: var(--navy-blue);
+}
+
+.btn-outline-navy:hover {
+    background-color: var(--navy-blue);
+    color: #ffffff;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #0f172a 100%);
+}
+
+.hero-title {
+    letter-spacing: -0.03em;
+}
+
+.text-danger-emphasis-hero {
+    color: #fca5a5;
+}
+
+.text-navy {
+    color: var(--navy-blue) !important;
+}
+
+.bg-navy {
+    background-color: var(--navy-blue) !important;
+}
+
+.hero-main-img {
+    max-height: 440px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.hero-floating-card {
+    position: absolute;
+    bottom: -15px;
+    left: 20px;
+    max-width: 320px;
+    border-left: 4px solid var(--primary-red);
+}
+
+/* Blood stock cards */
+.blood-stock-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.blood-stock-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+}
+
+.blood-type-badge {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--primary-red-light);
+    border: 2px solid var(--primary-red-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Step cards */
+.step-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.125rem;
+}
+
+/* Avatar circles */
+.avatar-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+}
+
+.avatar-circle-lg {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    font-weight: 800;
+}
+
+/* Digital Donor ID Card */
+.donor-id-card {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.donor-id-card::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+    width: 120px;
+    height: 120px;
+    background: rgba(185, 28, 28, 0.15);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Stepper styles */
+.stepper-wrapper {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+.stepper-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background-color: #e2e8f0;
+    z-index: 1;
+}
+
+.stepper-item {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    padding: 0 10px;
+}
+
+.step-counter {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e2e8f0;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.stepper-item.completed .step-counter {
+    background-color: #10b981;
+    color: #fff;
+}
+
+.stepper-item.active .step-counter {
+    background-color: #b91c1c;
+    color: #fff;
+}
+
+.stepper-item.danger .step-counter {
+    background-color: #ef4444;
+    color: #fff;
+}
+
+.step-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+/* Metric icons */
+.metric-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+/* Footer Custom */
+.footer-custom {
+    background-color: var(--navy-blue);
+    border-top: 4px solid var(--primary-red);
+}
+
+.hover-white:hover {
+    color: #ffffff !important;
+}
+
+.fs-xs {
+    font-size: 0.75rem;
+}
+
+.max-w-200 {
+    max-width: 200px;
+}
+
+.max-w-700 {
+    max-width: 700px;
+}

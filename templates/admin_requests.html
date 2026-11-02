@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Blood Requests &amp; Transfusion Approval – LifeSaver Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-5 py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h3 class="fw-bold text-navy mb-1">Blood Requisition &amp; Approval Center</h3>
+            <span class="text-muted small">Transactional approval automatically deducts units from MySQL inventory</span>
+        </div>
+        <div>
+            <a href="{{ url_for('admin_inventory') }}" class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-boxes me-1"></i> Check Live Stock
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+        <form method="GET" action="{{ url_for('admin_requests') }}" class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="Pending" {% if selected_status == 'Pending' %}selected{% endif %}>Pending Only</option>
+                    <option value="Approved" {% if selected_status == 'Approved' %}selected{% endif %}>Approved Only</option>
+                    <option value="Rejected" {% if selected_status == 'Rejected' %}selected{% endif %}>Rejected Only</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="priority" class="form-select">
+                    <option value="">All Priorities</option>
+                    <option value="Critical" {% if selected_priority == 'Critical' %}selected{% endif %}>Critical Priority</option>
+                    <option value="Urgent" {% if selected_priority == 'Urgent' %}selected{% endif %}>Urgent Priority</option>
+                    <option value="Standard" {% if selected_priority == 'Standard' %}selected{% endif %}>Standard Priority</option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-navy flex-grow-1">Apply Filters</button>
+                <a href="{{ url_for('admin_requests') }}" class="btn btn-outline-secondary">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+        <div class="card-body p-0">
+            {% if requests %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-uppercase">
+                            <tr>
+                                <th class="ps-4">Req #</th>
+                                <th>Patient Name</th>
+                                <th>Group</th>
+                                <th>Units Needed</th>
+                                <th>Available in Stock</th>
+                                <th>Hospital</th>
+                                <th>Contact</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th class="pe-4 text-end">Triage Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in requests %}
+                                {% set available = inventory_map.get(req.blood_group, 0) %}
+                                <tr>
+                                    <td class="ps-4 fw-bold">#{{ req.request_id }}</td>
+                                    <td>
+                                        <span class="fw-bold text-navy">{{ req.patient_name }}</span>
+                                        <small class="text-muted d-block">{{ req.created_at.strftime('%Y-%m-%d %H:%M') if req.created_at else '' }}</small>
+                                    </td>
+                                    <td><span class="badge bg-danger fs-6">{{ req.blood_group }}</span></td>
+                                    <td class="fw-bold text-navy">{{ req.units_required }} Units</td>
+                                    <td>
+                                        <span class="fw-semibold {% if available >= req.units_required %}text-success{% else %}text-danger{% endif %}">
+                                            {{ available }} Units
+                                        </span>
+                                        {% if available < req.units_required and req.status == 'Pending' %}
+                                            <span class="badge bg-danger ms-1 small">Low</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="small">{{ req.hospital_name }}</td>
+                                    <td class="small">{{ req.contact_number }}</td>
+                                    <td>
+                                        <span class="badge {% if req.emergency_priority == 'Critical' %}bg-danger{% elif req.emergency_priority == 'Urgent' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                            {{ req.emergency_priority }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if req.status == 'Approved' %}bg-success{% elif req.status == 'Pending' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                            {{ req.status }}
+                                        </span>
+                                    </td>
+                                    <td class="pe-4 text-end">
+                                        {% if req.status == 'Pending' %}
+                                            <div class="d-flex justify-content-end gap-1">
+                                                <!-- Approve Form -->
+                                                <form method="POST" action="{{ url_for('admin_approve_request', request_id=req.request_id) }}" class="d-inline" onsubmit="return confirm('Approve request and deduct {{ req.units_required }} units of {{ req.blood_group }} from inventory?');">
+                                                    <input type="hidden" name="admin_notes" value="Approved by medical officer. Cross-match passed. Dispatched.">
+                                                    <button type="submit" class="btn btn-sm btn-success" {% if available < req.units_required %}disabled title="Insufficient blood inventory units"{% endif %}>
+                                                        <i class="bi bi-check-lg"></i> Approve
+                                                    </button>
+                                                </form>
+
+                                                <!-- Reject Form -->
+                                                <form method="POST" action="{{ url_for('admin_reject_request', request_id=req.request_id) }}" class="d-inline" onsubmit="return confirm('Reject this blood request?');">
+                                                    <input type="hidden" name="admin_notes" value="Requisition rejected: mismatched clinical indications.">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted small">Processed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="p-5 text-center text-muted">No blood requests found.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

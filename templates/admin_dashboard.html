@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard – LifeSaver Blood Bank{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-5 py-4">
+    <!-- Header strip -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom">
+        <div>
+            <span class="badge bg-danger text-white rounded-pill px-3 py-1 mb-1">Administrative Console</span>
+            <h2 class="fw-bold text-navy mb-0">Clinical Blood Bank Operations Center</h2>
+            <span class="text-muted small">Logged in as: <strong>{{ session.get('admin_name', 'Dr. Marcus Vance') }}</strong> (Super Administrator)</span>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('admin_requests') }}" class="btn btn-danger btn-sm">
+                <i class="bi bi-inbox-fill me-1"></i> Triage Requests ({{ stats.pending_requests }})
+            </a>
+            <a href="{{ url_for('admin_inventory') }}" class="btn btn-outline-navy btn-sm">
+                <i class="bi bi-boxes me-1"></i> Manage Stock
+            </a>
+            <a href="{{ url_for('admin_donors') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-people-fill me-1"></i> Donors
+            </a>
+        </div>
+    </div>
+
+    <!-- Metrics Cards Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Total Donors</span>
+                    <div class="metric-icon bg-danger-subtle text-danger"><i class="bi bi-person-heart"></i></div>
+                </div>
+                <div class="fs-2 fw-extrabold text-navy tabular-nums">{{ stats.total_donors }}</div>
+                <div class="text-success small"><i class="bi bi-arrow-up-short"></i> Active Voluntary Pool</div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Total Units</span>
+                    <div class="metric-icon bg-primary-subtle text-primary"><i class="bi bi-droplet-fill"></i></div>
+                </div>
+                <div class="fs-2 fw-extrabold text-navy tabular-nums">{{ stats.total_units }}</div>
+                <div class="text-muted small">Across 8 Blood Groups</div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Total Requests</span>
+                    <div class="metric-icon bg-navy-subtle text-navy"><i class="bi bi-clipboard2-pulse"></i></div>
+                </div>
+                <div class="fs-2 fw-extrabold text-navy tabular-nums">{{ stats.total_requests }}</div>
+                <div class="text-muted small">Cumulative Requisitions</div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100 border-start border-4 border-warning">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Pending Triage</span>
+                    <div class="metric-icon bg-warning-subtle text-warning-emphasis"><i class="bi bi-hourglass-split"></i></div>
+                </div>
+                <div class="fs-2 fw-extrabold text-warning-emphasis tabular-nums">{{ stats.pending_requests }}</div>
+                <div class="text-warning-emphasis small fw-medium">Requires Immediate Action</div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100 border-start border-4 border-success">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Approved Units</span>
+                    <div class="metric-icon bg-success-subtle text-success"><i class="bi bi-check-circle-fill"></i></div>
+                </div>
+                <div class="fs-2 fw-extrabold text-success tabular-nums">{{ stats.approved_requests }}</div>
+                <div class="text-success small">Cleared &amp; Dispatched</div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Total Patients</span>
+                    <div class="metric-icon bg-secondary-subtle text-secondary"><i class="bi bi-hospital"></i></div>
+                </div>
+                <div class="fs-2 fw-extrabold text-navy tabular-nums">{{ stats.total_patients }}</div>
+                <div class="text-muted small">Registered Hospital Cases</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Snapshot Grid -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+        <div class="card-header bg-white py-3 px-4 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold text-navy mb-0">Real-Time Blood Inventory Status</h5>
+            <a href="{{ url_for('admin_inventory') }}" class="btn btn-outline-danger btn-sm">Update Stock Units</a>
+        </div>
+        <div class="card-body p-4">
+            <div class="row g-3 row-cols-2 row-cols-md-4 row-cols-lg-8 text-center">
+                {% for inv in inventory %}
+                    <div class="col">
+                        <div class="p-3 rounded-3 border bg-light h-100 d-flex flex-column justify-content-between">
+                            <span class="fs-3 fw-black text-danger d-block">{{ inv.blood_group }}</span>
+                            <div class="my-2">
+                                <span class="fs-4 fw-bold text-navy tabular-nums">{{ inv.available_units }}</span>
+                                <small class="text-muted d-block">units</small>
+                            </div>
+                            <div>
+                                {% if inv.available_units > 20 %}
+                                    <span class="badge bg-success-subtle text-success small">Normal</span>
+                                {% elif inv.available_units >= 8 %}
+                                    <span class="badge bg-warning-subtle text-warning-emphasis small">Moderate</span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger small">Critical</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Emergency Requisitions Table -->
+    <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+        <div class="card-header bg-white py-3 px-4 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold text-navy mb-0">Recent Blood Transfusion Requests</h5>
+            <a href="{{ url_for('admin_requests') }}" class="btn btn-sm btn-navy">View All ({{ stats.total_requests }})</a>
+        </div>
+        <div class="card-body p-0">
+            {% if recent_requests %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-uppercase">
+                            <tr>
+                                <th class="ps-4">Req #</th>
+                                <th>Patient Name</th>
+                                <th>Blood</th>
+                                <th>Units</th>
+                                <th>Hospital</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th class="pe-4 text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in recent_requests %}
+                                <tr>
+                                    <td class="ps-4 fw-bold">#{{ req.request_id }}</td>
+                                    <td class="fw-semibold text-navy">{{ req.patient_name }}</td>
+                                    <td><span class="badge bg-danger fs-6">{{ req.blood_group }}</span></td>
+                                    <td class="fw-bold">{{ req.units_required }} Units</td>
+                                    <td class="small text-muted">{{ req.hospital_name }}</td>
+                                    <td>
+                                        <span class="badge {% if req.emergency_priority == 'Critical' %}bg-danger{% elif req.emergency_priority == 'Urgent' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                            {{ req.emergency_priority }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if req.status == 'Approved' %}bg-success{% elif req.status == 'Pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                                            {{ req.status }}
+                                        </span>
+                                    </td>
+                                    <td class="pe-4 text-end">
+                                        <a href="{{ url_for('admin_requests') }}?status={{ req.status }}" class="btn btn-outline-navy btn-sm">Review</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="p-4 text-center text-muted">No recent requests recorded.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

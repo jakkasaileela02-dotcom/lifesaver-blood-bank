@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Donor Portal Login – LifeSaver Blood Bank{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow rounded-4 overflow-hidden">
+                <div class="card-header bg-navy text-white text-center py-4">
+                    <div class="brand-icon-box bg-danger mx-auto mb-2">
+                        <i class="bi bi-heart-fill"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1 text-white">Donor Portal</h4>
+                    <span class="text-white-50 small">Access your donation certificate &amp; availability</span>
+                </div>
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <form method="POST" action="{{ url_for('donor_login') }}">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" name="email" class="form-control" placeholder="donor@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold small">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger w-100 py-2 fw-bold mb-3">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Donor Account
+                        </button>
+
+                        <div class="text-center pt-2 border-top">
+                            <span class="small text-muted">New donor? </span>
+                            <a href="{{ url_for('donor_register') }}" class="small text-danger fw-semibold text-decoration-none">Register here</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

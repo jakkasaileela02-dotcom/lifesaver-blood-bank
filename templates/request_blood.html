@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Emergency Blood Request – LifeSaver Blood Bank{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow rounded-4 overflow-hidden">
+                <div class="card-header bg-danger text-white p-4">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-droplet-half fs-2"></i>
+                        <div>
+                            <h4 class="fw-bold mb-0 text-white">Emergency Blood Transfusion Request</h4>
+                            <span class="text-white-80 small">Hospital &amp; patient clinical triage requisition system</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <div class="alert alert-danger-subtle border border-danger-subtle rounded-3 mb-4 d-flex align-items-center gap-3">
+                        <i class="bi bi-exclamation-octagon-fill text-danger fs-3"></i>
+                        <div class="small">
+                            <strong>Immediate Life Threat?</strong> If patient is in hemorrhagic shock or active surgery, call central dispatch directly at <strong>1-800-543-3728</strong> in parallel with submitting this digital form.
+                        </div>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('request_blood') }}">
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Patient Full Name <span class="text-danger">*</span></label>
+                                <input type="text" name="patient_name" class="form-control" value="{{ patient.full_name if patient else '' }}" placeholder="Patient Name" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold small">Required Blood Group <span class="text-danger">*</span></label>
+                                <select name="blood_group" class="form-select fw-bold text-danger" required>
+                                    <option value="">Select...</option>
+                                    {% for bg in ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] %}
+                                        <option value="{{ bg }}" {% if patient and patient.blood_group == bg %}selected{% endif %}>{{ bg }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold small">Units Required <span class="text-danger">*</span></label>
+                                <input type="number" name="units_required" min="1" max="10" class="form-control" placeholder="e.g. 2" value="1" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Emergency Priority Level <span class="text-danger">*</span></label>
+                                <select name="emergency_priority" class="form-select fw-semibold" required>
+                                    <option value="Critical" class="text-danger fw-bold">Critical (Immediate OR / Trauma surgery)</option>
+                                    <option value="Urgent" class="text-warning-emphasis" selected>Urgent (Within 2 to 4 hours)</option>
+                                    <option value="Standard" class="text-secondary">Standard (Scheduled surgical / Dialysis)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Attending Hospital / Clinic Name <span class="text-danger">*</span></label>
+                                <input type="text" name="hospital_name" class="form-control" value="{{ patient.hospital_name if patient else '' }}" placeholder="e.g. St. Jude Hospital, Room 302" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Direct Physician / Attendant Contact Number <span class="text-danger">*</span></label>
+                                <input type="tel" name="contact_number" class="form-control" value="{{ patient.phone if patient else '' }}" placeholder="+1 (555) 000-0000" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Attending Ward / Bed Number</label>
+                                <input type="text" class="form-control" placeholder="e.g. ICU Ward 3, Bed 12">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger px-4 py-2 fw-bold">
+                                <i class="bi bi-send-check-fill me-1"></i> Submit Blood Requisition
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,399 @@
+{% extends "base.html" %}
+
+{% block title %}LifeSaver Blood Bank – Donate Blood, Save Lives{% endblock %}
+
+{% block content %}
+<!-- =========================================================================
+     HERO SECTION
+     ========================================================================= -->
+<section class="hero-section text-white py-5 position-relative overflow-hidden">
+    <div class="container py-lg-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="hero-subhead text-danger-light fw-bold text-uppercase tracking-wider mb-2 d-inline-block">
+                    Voluntary Clinical Hemotherapy Network
+                </span>
+                <h1 class="display-4 fw-extrabold text-white mb-3 hero-title lh-sm">
+                    Donate Blood, <br><span class="text-danger-emphasis-hero">Save Lives</span>
+                </h1>
+                <p class="lead text-white-80 mb-4 pe-lg-4 fs-6">
+                    A single whole blood donation takes less than 15 minutes and can save up to three separate lives. Join LifeSaver’s accredited donor community connecting immediate hospital transfusion units with dedicated voluntary donors.
+                </p>
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a href="{{ url_for('donor_register') }}" class="btn btn-danger btn-lg px-4 py-3 fw-bold shadow-sm d-flex align-items-center gap-2">
+                        <i class="bi bi-heart-fill"></i> Donate Blood Now
+                    </a>
+                    <a href="{{ url_for('request_blood') }}" class="btn btn-outline-light btn-lg px-4 py-3 fw-bold d-flex align-items-center gap-2">
+                        <i class="bi bi-search"></i> Find Emergency Blood
+                    </a>
+                </div>
+                <div class="d-flex align-items-center gap-4 text-white-50 pt-2 border-top border-white-10 small">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-fill-check text-success fs-5"></i>
+                        <span>100% Sterile &amp; Safe</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
+                        <span>Rapid 24/7 Cross-Matching</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-media-wrapper position-relative">
+                    <img src="/src/assets/images/hero_blood_donation_1793575606474.jpg" 
+                         alt="Caring nurse assisting voluntary blood donor at LifeSaver Clinic" 
+                         class="img-fluid rounded-4 shadow-lg hero-main-img border border-white-10"
+                         referrerpolicy="no-referrer">
+                    <div class="hero-floating-card p-3 rounded-3 shadow-lg bg-white text-dark d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-danger-subtle text-danger p-2 fs-4 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-droplet-half"></i>
+                        </div>
+                        <div>
+                            <span class="d-block fw-bold fs-6">Universal Donor (O-)</span>
+                            <span class="text-muted small">Compatible with every recipient blood type</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================================================================
+     STATISTICS STRIP
+     ========================================================================= -->
+<section id="statistics" class="stats-strip py-4 bg-white border-bottom shadow-xs">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3">
+                <div class="stat-box p-3">
+                    <div class="stat-number text-danger fw-extrabold display-6 tabular-nums">{{ stats.total_donors }}</div>
+                    <div class="stat-label text-muted small fw-semibold text-uppercase tracking-wider">Registered Donors</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-box p-3">
+                    <div class="stat-number text-navy fw-extrabold display-6 tabular-nums">{{ stats.total_units }}</div>
+                    <div class="stat-label text-muted small fw-semibold text-uppercase tracking-wider">Units in Cold Storage</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-box p-3">
+                    <div class="stat-number text-danger fw-extrabold display-6 tabular-nums">{{ stats.total_requests }}</div>
+                    <div class="stat-label text-muted small fw-semibold text-uppercase tracking-wider">Transfusion Requests</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-box p-3">
+                    <div class="stat-number text-navy fw-extrabold display-6 tabular-nums">{{ stats.total_patients }}</div>
+                    <div class="stat-label text-muted small fw-semibold text-uppercase tracking-wider">Patients Assisted</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================================================================
+     BLOOD GROUP AVAILABILITY SECTION
+     ========================================================================= -->
+<section id="availability" class="py-5 bg-light">
+    <div class="container py-lg-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-semibold mb-2">Live Cold-Storage Telemetry</span>
+            <h2 class="fw-bold display-6 text-navy">Blood Group Stock Availability</h2>
+            <p class="text-muted">
+                Our central blood bank monitors units round-the-clock across all eight standard ABO and Rh systems to ensure surgical trauma preparedness.
+            </p>
+        </div>
+
+        <div class="row g-3 row-cols-2 row-cols-sm-3 row-cols-md-4">
+            {% for item in inventory %}
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 blood-stock-card position-relative overflow-hidden">
+                        <div class="card-body p-4 text-center">
+                            <div class="blood-type-badge mx-auto mb-3">
+                                <span class="fs-2 fw-extrabold text-danger">{{ item.blood_group }}</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="fs-4 fw-bold text-navy tabular-nums">{{ item.available_units }}</span>
+                                <span class="text-muted small ms-1">units</span>
+                            </div>
+                            <div>
+                                {% if item.available_units > 20 %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">Adequate Stock</span>
+                                {% elif item.available_units >= 8 %}
+                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-3 py-1">Moderate</span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1">Critical Low</span>
+                                {% endif %}
+                            </div>
+                            <small class="text-muted d-block mt-3 pt-2 border-top fs-xs">
+                                Updated: {{ item.last_updated.strftime('%b %d, %H:%M') if item.last_updated else 'Recently' }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4 pt-3">
+            <a href="{{ url_for('request_blood') }}" class="btn btn-navy px-4 py-2 fw-semibold">
+                <i class="bi bi-hospital me-1"></i> Hospital Requisition Portal
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- =========================================================================
+     HOW IT WORKS SECTION
+     ========================================================================= -->
+<section id="how-it-works" class="py-5 bg-white">
+    <div class="container py-lg-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <h2 class="fw-bold display-6 text-navy">How Blood Donation Works</h2>
+            <p class="text-muted">
+                Volunteering is safe, hygienic, and structured through a strict medical protocol managed by licensed phlebotomists.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="step-card p-4 rounded-4 bg-light text-center h-100">
+                    <div class="step-circle bg-danger text-white mx-auto mb-3">1</div>
+                    <h5 class="fw-bold text-navy mb-2">Registration</h5>
+                    <p class="text-muted small mb-0">Fill out basic medical history, donor profile, age, and blood group verification.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card p-4 rounded-4 bg-light text-center h-100">
+                    <div class="step-circle bg-danger text-white mx-auto mb-3">2</div>
+                    <h5 class="fw-bold text-navy mb-2">Health Screening</h5>
+                    <p class="text-muted small mb-0">A medical officer checks vital signs, pulse, blood pressure, and hemoglobin count.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card p-4 rounded-4 bg-light text-center h-100">
+                    <div class="step-circle bg-danger text-white mx-auto mb-3">3</div>
+                    <h5 class="fw-bold text-navy mb-2">Donation</h5>
+                    <p class="text-muted small mb-0">Relax in comfortable recliners while 350-450 mL of whole blood is safely collected in 10-12 mins.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card p-4 rounded-4 bg-light text-center h-100">
+                    <div class="step-circle bg-danger text-white mx-auto mb-3">4</div>
+                    <h5 class="fw-bold text-navy mb-2">Refresh &amp; Save</h5>
+                    <p class="text-muted small mb-0">Enjoy complimentary refreshments, receive your LifeSaver Donor Card, and track your impact!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================================================================
+     WHY CHOOSE LIFESAVER
+     ========================================================================= -->
+<section id="why-us" class="py-5 bg-light">
+    <div class="container py-lg-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <img src="/src/assets/images/blood_testing_lab_1793575619921.jpg" 
+                     alt="LifeSaver Hematology and Component Fractionation Lab" 
+                     class="img-fluid rounded-4 shadow border"
+                     referrerpolicy="no-referrer">
+            </div>
+            <div class="col-lg-6">
+                <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-semibold mb-2">Clinical Excellence</span>
+                <h2 class="fw-bold display-6 text-navy mb-3">Why Healthcare Providers Choose LifeSaver</h2>
+                <p class="text-muted mb-4">
+                    Equipped with temperature-validated cold-chain transit, barcode sample traceability, and nucleic acid testing (NAT) for pathogens, LifeSaver sets the benchmark for blood safety.
+                </p>
+
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex gap-3 align-items-start">
+                        <div class="feature-icon-box text-danger bg-danger-subtle rounded-3 p-2">
+                            <i class="bi bi-shield-lock-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-navy mb-1">Stringent Safety &amp; Testing</h6>
+                            <p class="text-muted small mb-0">Every donation undergoes rigorous infectious disease screening and automated serological typing.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 align-items-start">
+                        <div class="feature-icon-box text-danger bg-danger-subtle rounded-3 p-2">
+                            <i class="bi bi-truck fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-navy mb-1">Cold-Chain Logistics</h6>
+                            <p class="text-muted small mb-0">Temperature-monitored refrigerated dispatch units deliver critical blood to hospitals in under 45 minutes.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 align-items-start">
+                        <div class="feature-icon-box text-danger bg-danger-subtle rounded-3 p-2">
+                            <i class="bi bi-database-check fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-navy mb-1">Atomic Inventory Auditing</h6>
+                            <p class="text-muted small mb-0">Transactional MySQL database ensures real-time stock integrity and prevents allocation overlaps.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================================================================
+     TESTIMONIALS SECTION
+     ========================================================================= -->
+<section class="py-5 bg-white">
+    <div class="container py-lg-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <h2 class="fw-bold display-6 text-navy">Stories from Our Community</h2>
+            <p class="text-muted">Hear from grateful transfusion recipients and lifelong regular donors.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-light">
+                    <div class="d-flex gap-1 text-warning mb-3">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-muted fst-italic small mb-4">
+                        "During an emergency trauma surgery after a freeway accident, I needed 4 units of O-negative blood immediately. LifeSaver dispatched the units to St. Jude’s in 20 minutes. I am alive today because someone took 15 minutes to donate."
+                    </p>
+                    <div class="mt-auto d-flex align-items-center gap-3">
+                        <div class="avatar-circle bg-danger text-white fw-bold">RS</div>
+                        <div>
+                            <h6 class="fw-bold text-navy mb-0">Robert Sterling</h6>
+                            <small class="text-muted">Emergency Recipient</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-light">
+                    <div class="d-flex gap-1 text-warning mb-3">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-muted fst-italic small mb-4">
+                        "I have donated whole blood 18 times through LifeSaver. The digital donor dashboard makes booking so smooth, and receiving an alert when my blood is utilized gives me an indescribable feeling of purpose."
+                    </p>
+                    <div class="mt-auto d-flex align-items-center gap-3">
+                        <div class="avatar-circle bg-navy text-white fw-bold">ER</div>
+                        <div>
+                            <h6 class="fw-bold text-navy mb-0">Elena Rostova</h6>
+                            <small class="text-muted">Regular Donor (18 Donations)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-light">
+                    <div class="d-flex gap-1 text-warning mb-3">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-muted fst-italic small mb-4">
+                        "As Chief of Surgery at Metropolitan Hospital, having LifeSaver’s live inventory API and rapid request triage is a game-changer. We can request rare B- units and receive confirmation in seconds."
+                    </p>
+                    <div class="mt-auto d-flex align-items-center gap-3">
+                        <div class="avatar-circle bg-secondary text-white fw-bold">DL</div>
+                        <div>
+                            <h6 class="fw-bold text-navy mb-0">Dr. Linda Ramos</h6>
+                            <small class="text-muted">Chief of Trauma Surgery</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================================================================
+     CONTACT & EMERGENCY HELPLINE
+     ========================================================================= -->
+<section id="contact" class="py-5 bg-light">
+    <div class="container py-lg-4">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-5">
+                <span class="badge bg-danger text-white px-3 py-2 rounded-pill fw-semibold mb-2">Get In Touch</span>
+                <h2 class="fw-bold display-6 text-navy mb-3">Contact LifeSaver Dispatch</h2>
+                <p class="text-muted mb-4">
+                    Have questions about donor eligibility, corporate blood donation drives, or emergency hospital transfusions? Our clinical support desk is staffed 24 hours a day.
+                </p>
+
+                <div class="d-flex flex-column gap-3 text-muted">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="contact-icon bg-white shadow-xs rounded-circle p-3 text-danger">
+                            <i class="bi bi-telephone-outbound-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <span class="d-block text-navy fw-bold">Emergency Blood Dispatch</span>
+                            <span>1-800-LIFESAVER (543-3728)</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="contact-icon bg-white shadow-xs rounded-circle p-3 text-danger">
+                            <i class="bi bi-geo-alt-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <span class="d-block text-navy fw-bold">Central Headquarters &amp; Laboratory</span>
+                            <span>500 Medical Center Way, Suite 100, Metro City</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="contact-icon bg-white shadow-xs rounded-circle p-3 text-danger">
+                            <i class="bi bi-envelope-check-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <span class="d-block text-navy fw-bold">Email Inquiries</span>
+                            <span>contact@lifesaver.org</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                    <h4 class="fw-bold text-navy mb-3">Send Us a Direct Message</h4>
+                    <form onsubmit="event.preventDefault(); alert('Thank you for reaching out! A medical coordinator will contact you shortly.');">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Your Name</label>
+                                <input type="text" class="form-control" placeholder="Jane Doe" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Contact Number</label>
+                                <input type="tel" class="form-control" placeholder="+1 (555) 000-0000" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Email Address</label>
+                                <input type="email" class="form-control" placeholder="jane@example.com" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Subject / Purpose</label>
+                                <select class="form-select">
+                                    <option>General Inquiry / Donor Eligibility</option>
+                                    <option>Hospital Blood Procurement</option>
+                                    <option>Organizing a Corporate Blood Drive</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Message</label>
+                                <textarea class="form-control" rows="4" placeholder="How can our clinical team help you today?" required></textarea>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-danger w-100 py-3 fw-bold">
+                                    <i class="bi bi-send-fill me-1"></i> Submit Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

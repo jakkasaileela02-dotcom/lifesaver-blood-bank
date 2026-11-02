@@ -1,0 +1,6 @@
+{
+  "name": "LifeSaver Blood Bank – Donor and Inventory Management System",
+  "description": "A comprehensive healthcare web application for voluntary donor management, urgent blood requests, inventory tracking, and clinical administration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

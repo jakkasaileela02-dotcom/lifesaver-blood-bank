@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Blood Inventory Control – LifeSaver Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-5 py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h3 class="fw-bold text-navy mb-1">Blood Inventory Management</h3>
+            <span class="text-muted small">Cold-storage unit levels across all 8 major human blood types</span>
+        </div>
+        <div>
+            <a href="{{ url_for('admin_requests') }}" class="btn btn-navy btn-sm">
+                <i class="bi bi-inbox-fill me-1"></i> View Requisitions
+            </a>
+        </div>
+    </div>
+
+    <!-- Inventory Cards -->
+    <div class="row g-4 mb-4">
+        {% for inv in inventory %}
+            <div class="col-sm-6 col-md-4 col-xl-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 bg-white overflow-hidden">
+                    <div class="card-header bg-navy text-white d-flex justify-content-between align-items-center py-3">
+                        <span class="fs-3 fw-black text-danger">{{ inv.blood_group }}</span>
+                        <div>
+                            {% if inv.available_units > 20 %}
+                                <span class="badge bg-success-subtle text-success">Adequate</span>
+                            {% elif inv.available_units >= 8 %}
+                                <span class="badge bg-warning-subtle text-warning-emphasis">Moderate</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger">Critical</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body p-4 text-center">
+                        <div class="my-3">
+                            <span class="display-5 fw-extrabold text-navy tabular-nums">{{ inv.available_units }}</span>
+                            <span class="text-muted d-block small">Units Available in Cold Bank</span>
+                        </div>
+                        <small class="text-muted d-block mb-3 fs-xs">
+                            Last Updated: {{ inv.last_updated.strftime('%Y-%m-%d %H:%M') if inv.last_updated else 'Recently' }}
+                        </small>
+
+                        <!-- Adjust Stock Form -->
+                        <form method="POST" action="{{ url_for('admin_update_inventory') }}" class="border-top pt-3">
+                            <input type="hidden" name="blood_group" value="{{ inv.blood_group }}">
+                            <div class="row g-2 mb-2">
+                                <div class="col-7">
+                                    <input type="number" name="units" min="1" max="100" class="form-control form-control-sm" placeholder="Units" value="1" required>
+                                </div>
+                                <div class="col-5">
+                                    <select name="action" class="form-select form-select-sm">
+                                        <option value="add">+ Add</option>
+                                        <option value="deduct">- Deduct</option>
+                                        <option value="set">= Set</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-outline-danger btn-sm w-100 fw-semibold">
+                                <i class="bi bi-arrow-repeat me-1"></i> Update Stock
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Blood Compatibility Matrix Information Box -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <h5 class="fw-bold text-navy mb-3">Clinical Blood Group Compatibility Matrix</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle small mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Recipient Blood Type</th>
+                        <th>Can Receive Red Blood Cells From</th>
+                        <th>Can Donate Red Blood Cells To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="fw-bold text-danger">O-</td><td>O- (Universal Donor)</td><td>All Blood Types (A+, A-, B+, B-, AB+, AB-, O+, O-)</td></tr>
+                    <tr><td class="fw-bold text-danger">O+</td><td>O+, O-</td><td>O+, A+, B+, AB+</td></tr>
+                    <tr><td class="fw-bold text-danger">A-</td><td>A-, O-</td><td>A+, A-, AB+, AB-</td></tr>
+                    <tr><td class="fw-bold text-danger">A+</td><td>A+, A-, O+, O-</td><td>A+, AB+</td></tr>
+                    <tr><td class="fw-bold text-danger">B-</td><td>B-, O-</td><td>B+, B-, AB+, AB-</td></tr>
+                    <tr><td class="fw-bold text-danger">B+</td><td>B+, B-, O+, O-</td><td>B+, AB+</td></tr>
+                    <tr><td class="fw-bold text-danger">AB-</td><td>AB-, A-, B-, O-</td><td>AB+, AB-</td></tr>
+                    <tr><td class="fw-bold text-danger">AB+</td><td>All Blood Types (Universal Recipient)</td><td>AB+ only</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

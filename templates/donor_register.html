@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Donor Registration – LifeSaver Blood Bank{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow rounded-4 overflow-hidden">
+                <div class="card-header bg-navy text-white p-4">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-heart-pulse-fill text-danger fs-3"></i>
+                        <div>
+                            <h4 class="fw-bold mb-0 text-white">Voluntary Donor Registration</h4>
+                            <span class="text-white-50 small">Your gift of life helps cancer patients, trauma surgeries, and mothers in need</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <form method="POST" action="{{ url_for('donor_register') }}">
+                        <h5 class="fw-bold text-navy mb-3 pb-2 border-bottom">1. Personal Information</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" name="full_name" class="form-control" placeholder="e.g. Elena Rostova" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold small">Age (18-65) <span class="text-danger">*</span></label>
+                                <input type="number" name="age" min="18" max="65" class="form-control" placeholder="28" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold small">Gender <span class="text-danger">*</span></label>
+                                <select name="gender" class="form-select" required>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Blood Group <span class="text-danger">*</span></label>
+                                <select name="blood_group" class="form-select fw-bold text-danger" required>
+                                    <option value="">Select Blood Group...</option>
+                                    <option value="A+">A Positive (A+)</option>
+                                    <option value="A-">A Negative (A-)</option>
+                                    <option value="B+">B Positive (B+)</option>
+                                    <option value="B-">B Negative (B-)</option>
+                                    <option value="AB+">AB Positive (AB+)</option>
+                                    <option value="AB-">AB Negative (AB-)</option>
+                                    <option value="O+">O Positive (O+)</option>
+                                    <option value="O-">O Negative (O-)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Last Donation Date (if any)</label>
+                                <input type="date" name="last_donation_date" class="form-control">
+                                <span class="form-text text-muted small">Must be at least 90 days ago for whole blood.</span>
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold text-navy mb-3 pb-2 border-bottom">2. Contact &amp; Residential Details</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" name="phone" class="form-control" placeholder="+1 (555) 000-0000" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" name="email" class="form-control" placeholder="donor@example.com" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Residential Address <span class="text-danger">*</span></label>
+                                <textarea name="address" class="form-control" rows="2" placeholder="Street Address, City, State, ZIP code" required></textarea>
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold text-navy mb-3 pb-2 border-bottom">3. Portal Security</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Account Password <span class="text-danger">*</span></label>
+                                <input type="password" name="password" class="form-control" minlength="6" placeholder="Choose a secure password" required>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="eligibilityCheck" required>
+                            <label class="form-check-label small text-muted" for="eligibilityCheck">
+                                I confirm I weigh at least 50 kg, am in general good health, have had no acute fever or tattoo within 6 months, and voluntarily consent to blood donation records storage.
+                            </label>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ url_for('donor_login') }}" class="text-decoration-none small text-muted">
+                                Already registered? <strong class="text-danger">Log in here</strong>
+                            </a>
+                            <button type="submit" class="btn btn-danger px-4 py-2 fw-bold">
+                                <i class="bi bi-person-check-fill me-1"></i> Register as Donor
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

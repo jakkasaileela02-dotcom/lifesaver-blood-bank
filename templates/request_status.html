@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Request Status #{{ request_item.request_id }} – LifeSaver Blood Bank{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow rounded-4 overflow-hidden mb-4">
+                <div class="card-header bg-navy text-white p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-danger rounded-pill px-3 py-1 mb-1">Requisition Tracking</span>
+                        <h4 class="fw-bold mb-0 text-white">Blood Request #{{ request_item.request_id }}</h4>
+                    </div>
+                    <div>
+                        {% if request_item.status == 'Approved' %}
+                            <span class="badge bg-success fs-6 px-3 py-2"><i class="bi bi-check-circle-fill me-1"></i> Approved</span>
+                        {% elif request_item.status == 'Pending' %}
+                            <span class="badge bg-warning text-dark fs-6 px-3 py-2"><i class="bi bi-clock-history me-1"></i> Under Review</span>
+                        {% else %}
+                            <span class="badge bg-danger fs-6 px-3 py-2"><i class="bi bi-x-circle-fill me-1"></i> {{ request_item.status }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <!-- Progress Stepper -->
+                    <div class="stepper-wrapper mb-5">
+                        <div class="stepper-item completed">
+                            <div class="step-counter"><i class="bi bi-check"></i></div>
+                            <div class="step-name">Submitted</div>
+                        </div>
+                        <div class="stepper-item {% if request_item.status in ['Approved', 'Fulfilled'] %}completed{% elif request_item.status == 'Pending' %}active{% else %}danger{% endif %}">
+                            <div class="step-counter">
+                                {% if request_item.status == 'Rejected' %}<i class="bi bi-x"></i>{% else %}2{% endif %}
+                            </div>
+                            <div class="step-name">Clinical Review</div>
+                        </div>
+                        <div class="stepper-item {% if request_item.status in ['Approved', 'Fulfilled'] %}completed{% else %}pending{% endif %}">
+                            <div class="step-counter">3</div>
+                            <div class="step-name">Cold-Chain Dispatch</div>
+                        </div>
+                        <div class="stepper-item {% if request_item.status == 'Fulfilled' %}completed{% else %}pending{% endif %}">
+                            <div class="step-counter">4</div>
+                            <div class="step-name">Hospital Receipt</div>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-navy mb-3 pb-2 border-bottom">Patient &amp; Clinical Requisition Details</h5>
+                    <div class="row g-3 mb-4 small">
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block">Patient Name:</span>
+                            <span class="fw-bold text-navy fs-6">{{ request_item.patient_name }}</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="text-muted d-block">Blood Group:</span>
+                            <span class="fw-extrabold text-danger fs-5">{{ request_item.blood_group }}</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="text-muted d-block">Units Requested:</span>
+                            <span class="fw-bold text-navy fs-6">{{ request_item.units_required }} Units</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block">Destination Hospital:</span>
+                            <span class="fw-semibold text-navy">{{ request_item.hospital_name }}</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="text-muted d-block">Emergency Priority:</span>
+                            <span class="badge {% if request_item.emergency_priority == 'Critical' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                {{ request_item.emergency_priority }}
+                            </span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="text-muted d-block">Contact Phone:</span>
+                            <span class="fw-semibold text-navy">{{ request_item.contact_number }}</span>
+                        </div>
+                        <div class="col-12">
+                            <span class="text-muted d-block">Administrative Notes / Dispatch Instructions:</span>
+                            <div class="p-3 bg-light rounded-3 mt-1 text-navy border">
+                                {{ request_item.admin_notes or 'Your request is currently being prioritized by our hematology triage team. If units are available, cross-matching commences immediately.' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between pt-3 border-top">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Back to Home
+                        </a>
+                        <a href="tel:18005433728" class="btn btn-danger">
+                            <i class="bi bi-telephone-fill me-1"></i> Contact Dispatch
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
